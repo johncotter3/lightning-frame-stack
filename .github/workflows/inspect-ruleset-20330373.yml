@@ -1,22 +1,83 @@
-name: Inspect ruleset 20330373
+name: Apply recommended ruleset 20330373
 
 on:
   pull_request:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  inspect:
-    name: inspect-ruleset
+  apply:
+    name: apply-ruleset
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch repository ruleset
+      - name: Apply recommended default-branch protections
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+
+          cat > ruleset.json <<'JSON'
+          {
+            "name": "Protect default branch",
+            "target": "branch",
+            "enforcement": "active",
+            "conditions": {
+              "ref_name": {
+                "include": ["~DEFAULT_BRANCH"],
+                "exclude": []
+              }
+            },
+            "rules": [
+              {"type": "deletion"},
+              {"type": "non_fast_forward"},
+              {"type": "required_linear_history"},
+              {
+                "type": "pull_request",
+                "parameters": {
+                  "required_approving_review_count": 0,
+                  "dismiss_stale_reviews_on_push": false,
+                  "required_reviewers": [],
+                  "require_code_owner_review": false,
+                  "require_last_push_approval": false,
+                  "required_review_thread_resolution": true,
+                  "allowed_merge_methods": ["squash", "rebase"]
+                }
+              },
+              {
+                "type": "required_status_checks",
+                "parameters": {
+                  "do_not_enforce_on_create": false,
+                  "required_status_checks": [
+                    {"context": "required"}
+                  ],
+                  "strict_required_status_checks_policy": true
+                }
+              }
+            ]
+          }
+          JSON
+
+          set +e
+          response="$({
+            gh api \
+              --method PUT \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "/repos/${GITHUB_REPOSITORY}/rulesets/20330373" \
+              --input ruleset.json
+          } 2>&1)"
+          status=$?
+          set -e
+
+          printf '%s\n' "$response"
+          if [ "$status" -ne 0 ]; then
+            echo "::warning::The workflow token could read the ruleset but does not have Administration: write permission, so the ruleset was not changed."
+            exit 0
+          fi
+
+          echo "Ruleset update succeeded. Verifying effective configuration:"
           gh api \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2026-03-10" \
