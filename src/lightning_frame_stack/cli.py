@@ -8,7 +8,8 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from . import __version__
-from .core import LightningStackError, StackConfig, stack_media
+from ._types import LightningStackError, StackConfig
+from .core import stack_media
 
 
 def build_parser() -> argparse.ArgumentParser:
