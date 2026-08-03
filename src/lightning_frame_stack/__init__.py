@@ -1,15 +1,15 @@
 """Create a single composite showing every lightning strike in an animation."""
 
-from .core import (
+from ._media import inspect_media
+from ._types import (
     AlignMode,
     LightningStackError,
     MediaInfo,
     StackConfig,
     StackMode,
     StackResult,
-    inspect_media,
-    stack_media,
 )
+from .core import stack_media
 
 __version__ = "0.1.0"
 
