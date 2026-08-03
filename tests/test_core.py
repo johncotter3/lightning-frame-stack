@@ -7,6 +7,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pytest
+from conftest import make_test_gif
 
 from lightning_frame_stack import (
     LightningStackError,
@@ -14,8 +15,6 @@ from lightning_frame_stack import (
     inspect_media,
     stack_media,
 )
-
-from conftest import make_test_gif
 
 
 def test_inspect_media_reads_gif(tmp_path: Path) -> None:

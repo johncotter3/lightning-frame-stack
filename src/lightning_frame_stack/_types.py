@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Literal, NoReturn
+from typing import Literal, NoReturn
 
 AlignMode = Literal["none", "translation", "euclidean", "affine"]
 StackMode = Literal["lightning", "max"]

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from lightning_frame_stack.cli import run
-
 from conftest import make_test_gif
+
+from lightning_frame_stack.cli import run
 
 
 def test_cli_end_to_end(tmp_path: Path) -> None:
