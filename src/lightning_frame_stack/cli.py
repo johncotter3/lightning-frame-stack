@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from . import __version__
 from .core import LightningStackError, StackConfig, stack_media
@@ -196,6 +196,7 @@ def run(argv: Sequence[str] | None = None) -> int:
 
     progress = None
     if not args.quiet:
+
         def report_progress(message: str) -> None:
             print(message, flush=True)
 
