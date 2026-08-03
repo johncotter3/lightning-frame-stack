@@ -1,0 +1,24 @@
+name: Inspect ruleset 20330373
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    name: inspect-ruleset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch repository ruleset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${GITHUB_REPOSITORY}/rulesets/20330373" \
+            | jq .
