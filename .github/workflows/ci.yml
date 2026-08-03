@@ -19,11 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Run Ruff
+      - name: Show Ruff fixes
         uses: astral-sh/ruff-action@v3
         with:
           version: "0.16.1"
-          args: check --output-format=github
+          args: check --fix --diff
           src: "."
 
   test:
