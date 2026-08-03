@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.python-version
+.venv/
+venv/
+env/
+
+# Packaging
+build/
+dist/
+*.egg-info/
+
+# Test and analysis output
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local media and generated output
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+lightning_stacked.png
+lightning_mask.png
+
+# Generated synthetic demo media (recreate with examples/create_synthetic_demo.py)
+docs/assets/synthetic_input.gif
+docs/assets/synthetic_mask.png
+docs/assets/synthetic_stacked.png
+docs/assets/synthetic_strikes.png

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use Lightning Frame Stack in published work, please cite this software."
+title: "Lightning Frame Stack"
+type: software
+authors:
+  - family-names: "Cotter"
+    given-names: "John"
+repository-code: "https://github.com/johncotter3/lightning-frame-stack"
+url: "https://github.com/johncotter3/lightning-frame-stack"
+version: "0.1.0"
+date-released: "2026-07-30"
+license: MIT

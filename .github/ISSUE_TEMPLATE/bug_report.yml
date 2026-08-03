@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible processing or installation problem
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not upload private or location-identifying footage. A small synthetic or cropped example is preferred.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: "0.1.0 or commit SHA"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "Python 3.14, Ubuntu 24.04, OpenCV 4.x"
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command or Python code
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or traceback
+      render: text

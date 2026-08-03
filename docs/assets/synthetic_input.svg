@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="300" viewBox="0 0 1080 300" role="img" aria-labelledby="title desc">
+  <title id="title">Three synthetic lightning frames</title>
+  <desc id="desc">Three neighboring night-sky frames, each showing a different lightning strike.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17172c"/>
+      <stop offset="0.62" stop-color="#2d2b4c"/>
+      <stop offset="1" stop-color="#503748"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <g id="scene">
+      <rect width="340" height="250" rx="14" fill="url(#sky)"/>
+      <g opacity="0.22" fill="#c8c9e8">
+        <ellipse cx="78" cy="72" rx="66" ry="22"/>
+        <ellipse cx="165" cy="58" rx="80" ry="27"/>
+        <ellipse cx="270" cy="82" rx="72" ry="23"/>
+        <ellipse cx="205" cy="113" rx="92" ry="19"/>
+      </g>
+      <path d="M0 205 L42 172 L91 198 L157 151 L222 199 L282 164 L340 190 L340 250 L0 250 Z" fill="#0b0c15"/>
+      <rect y="215" width="340" height="35" fill="#070911"/>
+      <g fill="#f2e6b3" opacity="0.75">
+        <circle cx="28" cy="217" r="1.5"/><circle cx="83" cy="220" r="1.5"/>
+        <circle cx="145" cy="218" r="1.5"/><circle cx="249" cy="220" r="1.5"/>
+        <circle cx="315" cy="218" r="1.5"/>
+      </g>
+    </g>
+    <g id="strike-a" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M92 18 L86 43 L95 61 L82 87 L89 112 L72 145" stroke="#9ba8ff" stroke-width="8" opacity="0.4" filter="url(#glow)"/>
+      <path d="M92 18 L86 43 L95 61 L82 87 L89 112 L72 145 M92 61 L111 72 L119 91 M83 88 L62 99 L53 118" stroke="#f7f8ff" stroke-width="2.2" filter="url(#glow)"/>
+    </g>
+    <g id="strike-b" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M185 7 L173 34 L183 55 L166 76 L177 96 L158 133" stroke="#9ba8ff" stroke-width="8" opacity="0.4" filter="url(#glow)"/>
+      <path d="M185 7 L173 34 L183 55 L166 76 L177 96 L158 133 M178 54 L202 68 L211 88 M168 76 L147 84 L137 105" stroke="#f7f8ff" stroke-width="2.2" filter="url(#glow)"/>
+    </g>
+    <g id="strike-c" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M286 24 L275 48 L283 68 L267 92 L275 113 L254 147" stroke="#9ba8ff" stroke-width="8" opacity="0.4" filter="url(#glow)"/>
+      <path d="M286 24 L275 48 L283 68 L267 92 L275 113 L254 147 M279 67 L302 78 L311 97 M268 92 L247 102 L239 123" stroke="#f7f8ff" stroke-width="2.2" filter="url(#glow)"/>
+    </g>
+  </defs>
+  <rect width="1080" height="300" rx="20" fill="#0c0d17"/>
+  <g transform="translate(15 20)"><use href="#scene"/><use href="#strike-a"/><text x="18" y="232" fill="#dfe2ff" font-family="system-ui, sans-serif" font-size="15">Frame 1</text></g>
+  <g transform="translate(370 20)"><use href="#scene"/><use href="#strike-b"/><text x="18" y="232" fill="#dfe2ff" font-family="system-ui, sans-serif" font-size="15">Frame 2</text></g>
+  <g transform="translate(725 20)"><use href="#scene"/><use href="#strike-c"/><text x="18" y="232" fill="#dfe2ff" font-family="system-ui, sans-serif" font-size="15">Frame 3</text></g>
+</svg>
