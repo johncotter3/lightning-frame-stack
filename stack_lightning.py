@@ -3,6 +3,5 @@
 
 from lightning_frame_stack.cli import entrypoint
 
-
 if __name__ == "__main__":
     entrypoint()
