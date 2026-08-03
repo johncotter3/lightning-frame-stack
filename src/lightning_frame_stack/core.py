@@ -20,16 +20,7 @@ from ._media import (
     read_frame,
 )
 from ._stacker import LightningStacker
-from ._types import (
-    AlignMode,
-    LightningStackError,
-    MediaInfo,
-    ProgressCallback,
-    StackConfig,
-    StackMode,
-    StackResult,
-    _fail,
-)
+from ._types import ProgressCallback, StackConfig, StackResult, _fail
 
 
 def _write_image(path: Path, image: np.ndarray) -> None:
