@@ -107,11 +107,19 @@ def stack_media(
         settings.every,
     ):
         aligned, valid, alignment_score = stabilizer.align(frame)
+        processed += 1
         if settings.align != "none" and alignment_score == 0.0:
             failed_alignments += 1
+            if progress is not None and (
+                processed % 25 == 0 or processed == expected
+            ):
+                progress(
+                    f"Processed {processed}/{expected} frames "
+                    f"(source frame {source_index})..."
+                )
+            continue
         normalized, _gain, _offset = exposure.match(aligned, valid)
         stacker.add(normalized, valid)
-        processed += 1
 
         if progress is not None and (processed % 25 == 0 or processed == expected):
             progress(

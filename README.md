@@ -38,9 +38,13 @@ only the positive lightning contribution onto a selected base frame.
 - GIF and common video input through Pillow and OpenCV.
 - Automatic clean, sharp base-frame selection.
 - Translation, Euclidean, or affine ECC stabilization.
+- Failed or low-confidence alignments are skipped instead of composited unwarped.
 - Robust global exposure matching.
 - Lightning-detail extraction that suppresses broad cloud illumination.
+- Automatic frame admission based on plausible sky-lightning components.
 - Long, straight artifact rejection for common phone-camera flare bars.
+- Repeated-detail suppression for vertical scene edges that survive imperfect
+  alignment, without blanking horizontal wire crossings.
 - Traditional exposure-normalized maximum-stack mode.
 - Optional lightning confidence-mask output.
 - Installable CLI plus a reusable Python API.
@@ -110,6 +114,14 @@ Save a confidence mask for diagnosis:
 lightning-stack storm.mp4 -o stacked.png --mask-output lightning_mask.png
 ```
 
+Exclude water or foreground reflections below a known horizon:
+
+```bash
+lightning-stack storm.mp4 -o stacked.png --lightning-to 0.58
+```
+
+The default processes the full image height and retains water reflections.
+
 Use an exposure-normalized maximum stack:
 
 ```bash
@@ -137,10 +149,13 @@ Run `lightning-stack --help` for every option.
 | Dim branches are missing | Lower `--threshold` or `--min-brightness` |
 | Noise or cloud texture appears | Raise `--threshold` or `--min-difference` |
 | Lightning looks too faint | Raise `--lightning-gain` |
-| Handheld frames do not line up | Try `--align affine` and lower `--min-alignment-score` slightly |
+| Handheld frames do not line up | Try `--align affine`; lower `--min-alignment-score` only if valid frames are being skipped |
 | Moving clouds confuse alignment | Raise `--align-from` so more of the sky is ignored |
 | Camera was perfectly fixed | Use `--align none` |
 | A real long straight strike is removed | Use `--keep-straight-artifacts` |
+| Poles or lamp posts have bright alignment ghosts | Lower `--persistent-artifact-frames` |
+| Water or foreground reflections are included | Set `--lightning-to` near the horizon height fraction |
+| A repeated vertical scene-edge stroke is removed | Raise `--persistent-artifact-frames` or use `0` to disable |
 | Full-cloud flashes still dominate | Keep default `lightning` mode rather than `max` |
 
 ## Python API
@@ -170,13 +185,16 @@ print(f"Used base frame {result.base_frame_index}")
 1. Inspect the animation or video and determine the requested frame range.
 2. Select a relatively dark, low-lightning, sharp base frame unless one is given.
 3. Estimate camera motion using the lower, usually stationary part of each frame.
-4. Warp frames to the base coordinate system.
+4. Skip low-confidence alignments and warp accepted frames to the base coordinates.
 5. Match each frame's robust intensity quantiles to the base exposure.
 6. Remove broad illumination with a Gaussian high-pass comparison.
-7. Keep transient bright components that also became brighter than the base.
-8. Reject suspiciously long, narrow, straight components by default.
-9. Keep the strongest valid lightning contribution at every pixel.
-10. Add that contribution to the untouched base image.
+7. Admit only frames containing a plausible sky-lightning component.
+8. Keep transient bright components that also became brighter than the base.
+9. Reject suspiciously long, narrow, straight components by default.
+10. Remove scene-edge alignment ghosts while protecting real lightning across
+    horizontal wires.
+11. Keep the strongest valid lightning contribution at every pixel.
+12. Add that contribution to the untouched base image.
 
 ## Supported media
 

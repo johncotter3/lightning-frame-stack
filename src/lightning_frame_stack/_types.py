@@ -54,7 +54,7 @@ class StackConfig:
     align: AlignMode = "euclidean"
     align_scale: float = 0.35
     align_from: float = 0.48
-    min_alignment_score: float = 0.50
+    min_alignment_score: float = 0.95
     exposure_match: bool = True
 
     detail_sigma: float = 4.0
@@ -64,7 +64,9 @@ class StackConfig:
     dilation: int = 5
     softness: float = 8.0
     lightning_gain: float = 1.0
+    lightning_to: float = 1.0
     reject_straight_artifacts: bool = True
+    persistent_artifact_frames: int = 4
 
     def validate(self) -> None:
         """Validate configuration values before processing begins."""
@@ -97,6 +99,10 @@ class StackConfig:
             _fail("softness must be positive")
         if self.lightning_gain <= 0:
             _fail("lightning_gain must be positive")
+        if not 0.0 < self.lightning_to <= 1.0:
+            _fail("lightning_to must be in the range (0.0, 1.0]")
+        if self.persistent_artifact_frames < 0:
+            _fail("persistent_artifact_frames must be non-negative")
 
     @property
     def effective_dilation(self) -> int:

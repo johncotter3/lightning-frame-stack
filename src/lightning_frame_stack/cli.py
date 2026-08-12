@@ -88,8 +88,8 @@ def build_parser() -> argparse.ArgumentParser:
     alignment.add_argument(
         "--min-alignment-score",
         type=float,
-        default=0.50,
-        help="Use identity alignment when the ECC score is lower.",
+        default=0.95,
+        help="Skip frames when the ECC alignment score is lower.",
     )
     alignment.add_argument(
         "--no-exposure-match",
@@ -141,11 +141,30 @@ def build_parser() -> argparse.ArgumentParser:
         help="Multiplier applied only to extracted positive lightning detail.",
     )
     extraction.add_argument(
+        "--lightning-to",
+        type=float,
+        default=1.0,
+        help=(
+            "Lowest image-height fraction where lightning is retained. Set this "
+            "near the horizon to exclude water or foreground reflections."
+        ),
+    )
+    extraction.add_argument(
         "--keep-straight-artifacts",
         action="store_true",
         help=(
             "Do not reject very narrow, nearly straight, long components. The "
             "default helps remove rolling-shutter and sensor-flare bars."
+        ),
+    )
+    extraction.add_argument(
+        "--persistent-artifact-frames",
+        type=int,
+        default=4,
+        help=(
+            "Suppress scene-edge alignment ghosts, with stronger suppression for "
+            "detail detected in at least this many lightning frames. Lower the "
+            "value for stronger cleanup; use 0 to disable."
         ),
     )
     extraction.add_argument(
@@ -192,7 +211,9 @@ def run(argv: Sequence[str] | None = None) -> int:
         dilation=args.dilation,
         softness=args.softness,
         lightning_gain=args.lightning_gain,
+        lightning_to=args.lightning_to,
         reject_straight_artifacts=not args.keep_straight_artifacts,
+        persistent_artifact_frames=args.persistent_artifact_frames,
     )
 
     progress = None
@@ -221,8 +242,8 @@ def run(argv: Sequence[str] | None = None) -> int:
             print(f"Saved mask: {result.mask_output_path}")
         if result.failed_alignments:
             print(
-                f"Note: {result.failed_alignments} frame(s) used identity alignment "
-                "because ECC did not meet the minimum score."
+                f"Note: {result.failed_alignments} frame(s) were skipped because "
+                "ECC did not meet the minimum alignment score."
             )
     return 0
 
