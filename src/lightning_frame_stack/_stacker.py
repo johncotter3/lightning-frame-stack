@@ -51,7 +51,8 @@ class LightningStacker:
         if self.lightning_to == 1.0:
             return weights
 
-        cutoff = int(round(self.height * self.lightning_to))
+        cutoff = int(self.height * self.lightning_to)
+        cutoff = max(1, min(self.height, cutoff))
         fade = min(16, max(4, int(round(self.height * 0.0125))))
         fade_start = max(0, cutoff - fade)
         weights[cutoff:, :] = 0.0
