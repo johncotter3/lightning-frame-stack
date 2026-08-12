@@ -65,7 +65,9 @@ class LightningStacker:
         )[:, np.newaxis]
         return weights
 
-    def _filter_seed_components(self, seed: np.ndarray) -> np.ndarray:
+    def _filter_seed_components(
+        self, seed: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         neighbor_count = cv2.boxFilter(
             seed.astype(np.uint8),
             cv2.CV_16U,
@@ -102,20 +104,21 @@ class LightningStacker:
 
             keep[label] = 1
 
-        return keep[labels].astype(bool)
+        return keep[labels].astype(bool), labels, stats, keep
 
-    def _lightning_component_mask(self, seed: np.ndarray) -> np.ndarray:
+    def _lightning_component_mask(
+        self, labels: np.ndarray, stats: np.ndarray, keep: np.ndarray
+    ) -> np.ndarray:
         """Return plausible sky-lightning components used to admit a frame."""
 
-        component_count, labels, stats, _ = cv2.connectedComponentsWithStats(
-            seed.astype(np.uint8), connectivity=8
-        )
-        keep = np.zeros(component_count, dtype=np.uint8)
+        lightning_keep = np.zeros_like(keep)
         min_height = max(12, int(round(self.height * 0.03)))
         min_area = max(4, min_height // 3)
         sky_limit = int(round(self.height * 0.45))
 
-        for label in range(1, component_count):
+        for label in range(1, len(keep)):
+            if not keep[label]:
+                continue
             _x, y, width, height, area = stats[label]
             aspect = height / max(1, width)
             straight_sensor_line = (
@@ -127,9 +130,9 @@ class LightningStacker:
                 and area >= min_area
                 and not straight_sensor_line
             ):
-                keep[label] = 1
+                lightning_keep[label] = 1
 
-        return keep[labels].astype(bool)
+        return lightning_keep[labels].astype(bool)
 
     def add(self, normalized_frame: np.ndarray, valid: np.ndarray) -> None:
         """Add one aligned, exposure-normalized frame to the stack."""
@@ -152,11 +155,11 @@ class LightningStacker:
             & (gray > self.min_brightness)
             & valid
         )
-        seed = self._filter_seed_components(seed)
+        seed, labels, stats, keep = self._filter_seed_components(seed)
         if not np.any(seed):
             return
 
-        lightning_components = self._lightning_component_mask(seed)
+        lightning_components = self._lightning_component_mask(labels, stats, keep)
         if not np.any(lightning_components):
             return
         self.protected_lightning_mask |= cv2.dilate(
